@@ -19,11 +19,17 @@ class OutputBufferListener implements EventSubscriberInterface
     private $matcher;
 
     /**
+     * @var \SplObjectStorage
+     */
+    private $buffers;
+
+    /**
      * @param RequestMatcherInterface $matcher
      */
     public function __construct(RequestMatcherInterface $matcher = null)
     {
         $this->matcher = $matcher;
+        $this->buffers = new \SplObjectStorage();
     }
 
     /**
@@ -38,6 +44,7 @@ class OutputBufferListener implements EventSubscriberInterface
         $request = $event->getRequest();
         if ($this->matcher->matches($request)) {
             ob_start();
+            $this->buffers->attach($request);
         }
     }
 
@@ -48,12 +55,12 @@ class OutputBufferListener implements EventSubscriberInterface
      */
     public function onKernelView(GetResponseForControllerResultEvent $event)
     {
-        $response = $event->getControllerResult();
         $request = $event->getRequest();
 
-        if (null === $response && $this->matcher->matches($request)) {
+        if ($this->buffers->contains($request)) {
             $response = ob_get_clean();
             $event->setResponse(new Response((string) $response));
+            $this->buffers->detach($request);
         }
     }
 
@@ -68,7 +75,7 @@ class OutputBufferListener implements EventSubscriberInterface
     public function onKernelException(GetResponseForExceptionEvent $event)
     {
         $request = $event->getRequest();
-        if ($this->matcher->matches($request)) {
+        if ($this->buffers->contains($request)) {
             $response = ob_get_clean();
             $event->setResponse(new Response((string) $response));
         }
@@ -77,7 +84,7 @@ class OutputBufferListener implements EventSubscriberInterface
     public function onKernelShutdown(GetResponseForShutdownEvent $event)
     {
         $request = $event->getRequest();
-        if ($this->matcher->matches($request)) {
+        if ($this->buffers->contains($request)) {
             $response = ob_get_clean();
             $event->setResponse(new Response((string) $response));
         }
