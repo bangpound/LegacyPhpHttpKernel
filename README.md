@@ -27,7 +27,7 @@ Working Example #2
 ````json
 {
 	"require": {
-		"bangpound/legacy-php-http-kernel": "dev-master"
+		"bangpound/legacy-php-http-kernel": "1.0.*"
 	}
 }
 ````
