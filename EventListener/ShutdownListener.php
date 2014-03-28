@@ -59,10 +59,10 @@ class ShutdownListener implements EventSubscriberInterface
     public static function getSubscribedEvents()
     {
         return array(
-            KernelEvents::CONTROLLER => 'onKernelController',
-            KernelEvents::EXCEPTION => 'onKernelPostController',
-            KernelEvents::VIEW => 'onKernelPostController',
-            KernelEvents::RESPONSE => 'onKernelPostController',
+            KernelEvents::CONTROLLER => array('onKernelController', -512),
+            KernelEvents::EXCEPTION => array('onKernelPostController', 512),
+            KernelEvents::VIEW => array('onKernelPostController', 512),
+            KernelEvents::RESPONSE => array('onKernelPostController', 512),
         );
     }
 }

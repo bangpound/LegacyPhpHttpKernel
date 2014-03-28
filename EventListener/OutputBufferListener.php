@@ -4,7 +4,7 @@ namespace Bangpound\LegacyPhp\EventListener;
 use Bangpound\LegacyPhp\Event\GetResponseForShutdownEvent;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\HttpKernel\Event\GetResponseEvent;
+use Symfony\Component\HttpKernel\Event\FilterControllerEvent;
 use Symfony\Component\HttpKernel\Event\GetResponseForControllerResultEvent;
 use Symfony\Component\HttpKernel\Event\GetResponseForExceptionEvent;
 use Symfony\Component\HttpKernel\KernelEvents;
@@ -31,9 +31,9 @@ class OutputBufferListener implements EventSubscriberInterface
      *
      * This supercedes all ob_ functions in Bootstrap.
      *
-     * @param GetResponseEvent $event
+     * @param FilterControllerEvent $event
      */
-    public function onKernelRequest(GetResponseEvent $event)
+    public function onKernelController(FilterControllerEvent $event)
     {
         $request = $event->getRequest();
         if ($this->matcher->matches($request)) {
@@ -86,10 +86,10 @@ class OutputBufferListener implements EventSubscriberInterface
     public static function getSubscribedEvents()
     {
         return array(
-            KernelEvents::REQUEST => array('onKernelRequest'),
-            KernelEvents::EXCEPTION => array('onKernelException'),
-            KernelEvents::VIEW => array('onKernelView'),
-            BangpoundKernelEvents::SHUTDOWN => array('onKernelShutdown'),
+            KernelEvents::CONTROLLER => array('onKernelController', -512),
+            KernelEvents::EXCEPTION => array('onKernelException', 512),
+            KernelEvents::VIEW => array('onKernelView', 512),
+            BangpoundKernelEvents::SHUTDOWN => array('onKernelShutdown', 512),
         );
     }
 }
