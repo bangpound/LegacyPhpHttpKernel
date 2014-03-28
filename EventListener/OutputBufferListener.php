@@ -52,12 +52,22 @@ class OutputBufferListener implements EventSubscriberInterface
     public function onKernelPostController(GetResponseEvent $event)
     {
         $request = $event->getRequest();
-
         if ($this->buffers->contains($request)) {
-            $response = ob_get_clean();
-            $event->setResponse(new Response((string) $response));
+            $event->setResponse($this->getResponse());
             $this->buffers->detach($request);
         }
+    }
+
+    /**
+     * Captures a response from output buffers.
+     *
+     * Override this method in a subclass to set response status and headers.
+     *
+     * @return Response
+     */
+    protected function getResponse()
+    {
+        return new Response((string) ob_get_clean());
     }
 
     public static function getSubscribedEvents()
