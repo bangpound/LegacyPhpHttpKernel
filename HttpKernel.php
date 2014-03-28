@@ -10,8 +10,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Event\FilterResponseEvent;
 use Symfony\Component\HttpKernel\Event\FinishRequestEvent;
 use Symfony\Component\HttpKernel\HttpKernelInterface;
-use Symfony\Component\HttpKernel\KernelEvents;
-use Bangpound\LegacyPhp\KernelEvents as BangpoundKernelEvents;
+use Symfony\Component\HttpKernel\KernelEvents as BaseKernelEvents;
 
 /**
  * Adds a shutdown function that captures the response and completes handling it.
@@ -35,7 +34,7 @@ class HttpKernel extends BaseHttpKernel implements ShutdownableInterface
         if ($this->shutdown) {
             // shutdown
             $event = new GetResponseForShutdownEvent($this, $request, $type);
-            $this->dispatcher->dispatch(BangpoundKernelEvents::SHUTDOWN, $event);
+            $this->dispatcher->dispatch(KernelEvents::SHUTDOWN, $event);
 
             if ($event->hasResponse()) {
                 $response = $event->getResponse();
@@ -65,7 +64,7 @@ class HttpKernel extends BaseHttpKernel implements ShutdownableInterface
     {
         $event = new FilterResponseEvent($this, $request, $type, $response);
 
-        $this->dispatcher->dispatch(KernelEvents::RESPONSE, $event);
+        $this->dispatcher->dispatch(BaseKernelEvents::RESPONSE, $event);
 
         $this->finishRequest($request, $type);
 
@@ -84,7 +83,7 @@ class HttpKernel extends BaseHttpKernel implements ShutdownableInterface
      */
     private function finishRequest(Request $request, $type)
     {
-        $this->dispatcher->dispatch(KernelEvents::FINISH_REQUEST, new FinishRequestEvent($this, $request, $type));
+        $this->dispatcher->dispatch(BaseKernelEvents::FINISH_REQUEST, new FinishRequestEvent($this, $request, $type));
         $this->requestStack->pop();
     }
 }

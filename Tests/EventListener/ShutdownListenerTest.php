@@ -4,7 +4,7 @@ namespace Bangpound\LegacyPhp\Tests\EventListener;
 use Bangpound\LegacyPhp\Event\GetResponseForShutdownEvent;
 use Bangpound\LegacyPhp\EventListener\ShutdownListener;
 use Bangpound\LegacyPhp\HttpKernel;
-use Bangpound\LegacyPhp\KernelEvents as BangpoundKernelEvents;
+use Bangpound\LegacyPhp\KernelEvents;
 use Symfony\Component\EventDispatcher\EventDispatcher;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\RequestMatcher;
@@ -16,7 +16,7 @@ class ShutdownListenerTest extends \PHPUnit_Framework_TestCase
     {
         $dispatcher = new EventDispatcher();
         $dispatcher->addSubscriber(new ShutdownListener(new RequestMatcher()));
-        $dispatcher->addListener(BangpoundKernelEvents::SHUTDOWN, function (GetResponseForShutdownEvent $event) use (&$called) {
+        $dispatcher->addListener(KernelEvents::SHUTDOWN, function (GetResponseForShutdownEvent $event) use (&$called) {
             $called = true;
             $event->setResponse(new Response('Go away'));
         });

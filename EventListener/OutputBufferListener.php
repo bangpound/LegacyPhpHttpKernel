@@ -5,9 +5,9 @@ use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Event\FilterControllerEvent;
 use Symfony\Component\HttpKernel\Event\GetResponseEvent;
-use Symfony\Component\HttpKernel\KernelEvents;
+use Symfony\Component\HttpKernel\KernelEvents as BaseKernelEvents;
 use Symfony\Component\HttpFoundation\RequestMatcherInterface;
-use Bangpound\LegacyPhp\KernelEvents as BangpoundKernelEvents;;
+use Bangpound\LegacyPhp\KernelEvents;
 
 class OutputBufferListener implements EventSubscriberInterface
 {
@@ -73,10 +73,10 @@ class OutputBufferListener implements EventSubscriberInterface
     public static function getSubscribedEvents()
     {
         return array(
-            KernelEvents::CONTROLLER => array('onKernelController'),
-            KernelEvents::EXCEPTION => array('onKernelPostController'),
-            KernelEvents::VIEW => array('onKernelPostController'),
-            BangpoundKernelEvents::SHUTDOWN => array('onKernelPostController'),
+            BaseKernelEvents::CONTROLLER => array('onKernelController'),
+            BaseKernelEvents::EXCEPTION => array('onKernelPostController'),
+            BaseKernelEvents::VIEW => array('onKernelPostController'),
+            KernelEvents::SHUTDOWN => array('onKernelPostController'),
         );
     }
 }

@@ -8,11 +8,11 @@ use Symfony\Component\HttpKernel\Event\FilterResponseEvent;
 use Symfony\Component\HttpKernel\Event\FinishRequestEvent;
 use Symfony\Component\HttpKernel\Event\GetResponseForControllerResultEvent;
 use Symfony\Component\HttpKernel\Event\PostResponseEvent;
-use Symfony\Component\HttpKernel\KernelEvents;
+use Symfony\Component\HttpKernel\KernelEvents as BaseKernelEvents;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\EventDispatcher\EventDispatcher;
-use Bangpound\LegacyPhp\KernelEvents as BangpoundKernelEvents;
+use Bangpound\LegacyPhp\KernelEvents;
 
 class HttpKernelTest extends \PHPUnit_Framework_TestCase
 {
@@ -20,10 +20,10 @@ class HttpKernelTest extends \PHPUnit_Framework_TestCase
     {
         $dispatcher = new EventDispatcher();
         $kernel = new HttpKernel($dispatcher, $this->getResolver());
-        $dispatcher->addListener(KernelEvents::VIEW, function (GetResponseForControllerResultEvent $event) use (&$called) {
+        $dispatcher->addListener(BaseKernelEvents::VIEW, function (GetResponseForControllerResultEvent $event) use (&$called) {
             $called = true;
         });
-        $dispatcher->addListener(BangpoundKernelEvents::SHUTDOWN, function (GetResponseForShutdownEvent $event) {
+        $dispatcher->addListener(KernelEvents::SHUTDOWN, function (GetResponseForShutdownEvent $event) {
             $event->setResponse(new Response('Hello'));
         });
 
@@ -37,13 +37,13 @@ class HttpKernelTest extends \PHPUnit_Framework_TestCase
     {
         $dispatcher = new EventDispatcher();
         $kernel = new HttpKernel($dispatcher, $this->getResolver());
-        $dispatcher->addListener(KernelEvents::RESPONSE, function (FilterResponseEvent $event) use (&$called, &$capturedKernel, &$capturedRequest, &$capturedResponse) {
+        $dispatcher->addListener(BaseKernelEvents::RESPONSE, function (FilterResponseEvent $event) use (&$called, &$capturedKernel, &$capturedRequest, &$capturedResponse) {
             $called = true;
             $capturedKernel = $event->getKernel();
             $capturedRequest = $event->getRequest();
             $capturedResponse = $event->getResponse();
         });
-        $dispatcher->addListener(BangpoundKernelEvents::SHUTDOWN, function (GetResponseForShutdownEvent $event) use (&$response) {
+        $dispatcher->addListener(KernelEvents::SHUTDOWN, function (GetResponseForShutdownEvent $event) use (&$response) {
             $event->setResponse($response = new Response());
         });
 
@@ -58,12 +58,12 @@ class HttpKernelTest extends \PHPUnit_Framework_TestCase
     {
         $dispatcher = new EventDispatcher();
         $kernel = new HttpKernel($dispatcher, $this->getResolver());
-        $dispatcher->addListener(KernelEvents::FINISH_REQUEST, function (FinishRequestEvent $event) use (&$called, &$capturedKernel, &$capturedRequest) {
+        $dispatcher->addListener(BaseKernelEvents::FINISH_REQUEST, function (FinishRequestEvent $event) use (&$called, &$capturedKernel, &$capturedRequest) {
             $called = true;
             $capturedKernel = $event->getKernel();
             $capturedRequest = $event->getRequest();
         });
-        $dispatcher->addListener(BangpoundKernelEvents::SHUTDOWN, function (GetResponseForShutdownEvent $event) {
+        $dispatcher->addListener(KernelEvents::SHUTDOWN, function (GetResponseForShutdownEvent $event) {
             $event->setResponse(new Response('Hello'));
         });
 
@@ -79,13 +79,13 @@ class HttpKernelTest extends \PHPUnit_Framework_TestCase
     {
         $dispatcher = new EventDispatcher();
         $kernel = new HttpKernel($dispatcher, $this->getResolver());
-        $dispatcher->addListener(KernelEvents::TERMINATE, function (PostResponseEvent $event) use (&$called, &$capturedKernel, &$capturedRequest, &$capturedResponse) {
+        $dispatcher->addListener(BaseKernelEvents::TERMINATE, function (PostResponseEvent $event) use (&$called, &$capturedKernel, &$capturedRequest, &$capturedResponse) {
             $called = true;
             $capturedKernel = $event->getKernel();
             $capturedRequest = $event->getRequest();
             $capturedResponse = $event->getResponse();
         });
-        $dispatcher->addListener(BangpoundKernelEvents::SHUTDOWN, function (GetResponseForShutdownEvent $event) use (&$response) {
+        $dispatcher->addListener(KernelEvents::SHUTDOWN, function (GetResponseForShutdownEvent $event) use (&$response) {
             $event->setResponse($response = new Response('Hello'));
         });
 
@@ -104,7 +104,7 @@ class HttpKernelTest extends \PHPUnit_Framework_TestCase
         $kernel = new HttpKernel($dispatcher, $this->getResolver());
         $request = new Request();
         $response = $kernel->handle($request);
-        $dispatcher->addListener(BangpoundKernelEvents::SHUTDOWN, function (GetResponseForShutdownEvent $event) use (&$response) {
+        $dispatcher->addListener(KernelEvents::SHUTDOWN, function (GetResponseForShutdownEvent $event) use (&$response) {
             $event->setResponse($response);
         });
         ob_start();
@@ -120,7 +120,7 @@ class HttpKernelTest extends \PHPUnit_Framework_TestCase
         $kernel = new HttpKernel($dispatcher, $this->getResolver());
         $request = new Request();
         $response = $kernel->handle($request);
-        $dispatcher->addListener(BangpoundKernelEvents::SHUTDOWN, function (GetResponseForShutdownEvent $event) use (&$response) {
+        $dispatcher->addListener(KernelEvents::SHUTDOWN, function (GetResponseForShutdownEvent $event) use (&$response) {
             $event->setResponse($response = new Response('Go away'));
         });
         $this->assertEquals('Hello', $response->getContent());
@@ -137,7 +137,7 @@ class HttpKernelTest extends \PHPUnit_Framework_TestCase
         $kernel = new HttpKernel($dispatcher, $this->getResolver());
         $request = new Request();
         $response = $kernel->handle($request);
-        $dispatcher->addListener(BangpoundKernelEvents::SHUTDOWN, function (GetResponseForShutdownEvent $event) use (&$response) {
+        $dispatcher->addListener(KernelEvents::SHUTDOWN, function (GetResponseForShutdownEvent $event) use (&$response) {
             $event->setResponse($response = new Response('Go away'));
         });
         $this->assertEquals('Hello', $response->getContent());
