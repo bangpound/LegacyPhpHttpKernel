@@ -1,0 +1,22 @@
+{
+    "name": "bangpound/legacy-php-http-kernel",
+    "description": "Symfony HttpKernel for supporting controllers that exit or rreturn null.",
+    "require": {
+        "php": ">=5.3.3",
+        "symfony/http-kernel": "~2.4"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "3.7.*"
+    },
+    "license": "MIT",
+    "autoload": {
+        "psr-0": { "Bangpound\\LegacyPhp\\": "" }
+    },
+    "target-dir": "Bangpound/LegacyPhp",
+    "authors": [
+        {
+            "name": "Benjamin Doherty",
+            "email": "bjd@bangpound.org"
+        }
+    ]
+}
