@@ -63,10 +63,10 @@ class OutputBufferListener implements EventSubscriberInterface
     public static function getSubscribedEvents()
     {
         return array(
-            KernelEvents::CONTROLLER => array('onKernelController', -512),
-            KernelEvents::EXCEPTION => array('onKernelPostController', 512),
-            KernelEvents::VIEW => array('onKernelPostController', 512),
-            BangpoundKernelEvents::SHUTDOWN => array('onKernelPostController', 512),
+            KernelEvents::CONTROLLER => array('onKernelController'),
+            KernelEvents::EXCEPTION => array('onKernelPostController'),
+            KernelEvents::VIEW => array('onKernelPostController'),
+            BangpoundKernelEvents::SHUTDOWN => array('onKernelPostController'),
         );
     }
 }
