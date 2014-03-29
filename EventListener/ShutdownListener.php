@@ -6,7 +6,7 @@ use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpFoundation\RequestMatcherInterface;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Event\FilterControllerEvent;
-use Symfony\Component\HttpKernel\Event\KernelEvent;
+use Symfony\Component\HttpKernel\Event\FilterResponseEvent;
 use Symfony\Component\HttpKernel\KernelEvents;
 
 class ShutdownListener implements EventSubscriberInterface
@@ -43,9 +43,9 @@ class ShutdownListener implements EventSubscriberInterface
      * All kernel events after KernelEvents::CONTROLLER should remind the shutdown
      * controller that it is not needed because the request is being handled correctly.
      *
-     * @param KernelEvent $event
+     * @param FilterResponseEvent $event
      */
-    public function onKernelPostController(KernelEvent $event)
+    public function onKernelResponse(FilterResponseEvent $event)
     {
         $request = $event->getRequest();
         if (null === $this->matcher || $this->matcher->matches($request)) {
@@ -60,9 +60,7 @@ class ShutdownListener implements EventSubscriberInterface
     {
         return array(
             KernelEvents::CONTROLLER => array('onKernelController'),
-            KernelEvents::EXCEPTION => array('onKernelPostController'),
-            KernelEvents::VIEW => array('onKernelPostController'),
-            KernelEvents::RESPONSE => array('onKernelPostController'),
+            KernelEvents::RESPONSE => array('onKernelResponse'),
         );
     }
 }
