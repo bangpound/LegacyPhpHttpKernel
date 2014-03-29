@@ -31,7 +31,7 @@ class HeaderListener implements EventSubscriberInterface
     public function onKernelResponse(FilterResponseEvent $event)
     {
         $request = $event->getRequest();
-        if ($this->matcher->matches($request)) {
+        if (null === $this->matcher || $this->matcher->matches($request)) {
 
             $response = $event->getResponse();
 
