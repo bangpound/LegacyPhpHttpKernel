@@ -70,6 +70,9 @@ class OutputBufferListener implements EventSubscriberInterface
         return new Response((string) ob_get_clean());
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public static function getSubscribedEvents()
     {
         return array(
