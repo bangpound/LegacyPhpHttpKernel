@@ -14,6 +14,9 @@ use Symfony\Component\HttpKernel\HttpKernel;
 
 class HeaderListenerTest extends \PHPUnit_Framework_TestCase
 {
+    /**
+     * @requires PHP 5.4.0
+     */
     public function testStatus()
     {
         $dispatcher = new EventDispatcher();
@@ -31,6 +34,9 @@ class HeaderListenerTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals(201, $response->getStatusCode());
     }
 
+    /**
+     * @requires PHP 5.4.0
+     */
     public function testRedirectByHeader()
     {
         $dispatcher = new EventDispatcher();
