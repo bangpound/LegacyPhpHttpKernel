@@ -38,7 +38,7 @@ class OutputBufferListener implements EventSubscriberInterface
     public function onKernelController(FilterControllerEvent $event)
     {
         $request = $event->getRequest();
-        if ($this->matcher->matches($request)) {
+        if (null === $this->matcher || $this->matcher->matches($request)) {
             ob_start();
             $this->buffers->attach($request);
         }
