@@ -77,7 +77,6 @@ class OutputBufferListener implements EventSubscriberInterface
     {
         return array(
             BaseKernelEvents::CONTROLLER => array('onKernelController'),
-            BaseKernelEvents::EXCEPTION => array('onKernelPostController'),
             BaseKernelEvents::VIEW => array('onKernelPostController'),
             KernelEvents::SHUTDOWN => array('onKernelPostController'),
         );
