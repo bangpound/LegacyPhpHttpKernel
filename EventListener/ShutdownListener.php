@@ -34,7 +34,7 @@ class ShutdownListener implements EventSubscriberInterface
     public function onKernelController(FilterControllerEvent $event)
     {
         $request = $event->getRequest();
-        if ($this->matcher->matches($request)) {
+        if (null === $this->matcher || $this->matcher->matches($request)) {
             register_shutdown_function(array($event->getKernel(), 'shutdown'), $request, $event->getRequestType());
         }
     }
@@ -48,7 +48,7 @@ class ShutdownListener implements EventSubscriberInterface
     public function onKernelPostController(KernelEvent $event)
     {
         $request = $event->getRequest();
-        if ($this->matcher->matches($request)) {
+        if (null === $this->matcher || $this->matcher->matches($request)) {
             $event->getKernel()->supressShutdown();
         }
     }
