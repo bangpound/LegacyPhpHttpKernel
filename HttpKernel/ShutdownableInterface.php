@@ -2,7 +2,6 @@
 namespace Bangpound\LegacyPhp\HttpKernel;
 
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\HttpKernelInterface;
 
 /**
@@ -11,6 +10,9 @@ use Symfony\Component\HttpKernel\HttpKernelInterface;
  */
 interface ShutdownableInterface
 {
+    /**
+     * @return void
+     */
     public function supressShutdown();
 
     /**
@@ -22,6 +24,7 @@ interface ShutdownableInterface
      * @param integer $type    The type of the request (one of HttpKernelInterface::MASTER_REQUEST or HttpKernelInterface::SUB_REQUEST)
      *
      * @api
+     * @return void
      */
     public function shutdown(Request $request, $type = HttpKernelInterface::MASTER_REQUEST);
 }
