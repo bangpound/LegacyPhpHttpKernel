@@ -34,6 +34,9 @@ class ShutdownListenerTest extends \PHPUnit_Framework_TestCase
         $this->assertEmpty(ob_get_clean());
     }
 
+    /**
+     * @return \Symfony\Component\HttpKernel\Controller\ControllerResolverInterface
+     */
     protected function getResolver($controller = null)
     {
         if (null === $controller) {
