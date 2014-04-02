@@ -1,14 +1,19 @@
 <?php
 namespace Bangpound\LegacyPhp\EventListener;
 
+use Bangpound\LegacyPhp\Event\GetResponseForShutdownEvent;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Event\FilterControllerEvent;
-use Symfony\Component\HttpKernel\Event\GetResponseEvent;
+use Symfony\Component\HttpKernel\Event\GetResponseForControllerResultEvent;
 use Symfony\Component\HttpKernel\KernelEvents as BaseKernelEvents;
 use Symfony\Component\HttpFoundation\RequestMatcherInterface;
 use Bangpound\LegacyPhp\KernelEvents;
 
+/**
+ * Class OutputBufferListener
+ * @package Bangpound\LegacyPhp\EventListener
+ */
 class OutputBufferListener implements EventSubscriberInterface
 {
     /**
@@ -17,16 +22,23 @@ class OutputBufferListener implements EventSubscriberInterface
     private $matcher;
 
     /**
+     * @var \Symfony\Component\HttpFoundation\Response
+     */
+    private $response;
+
+    /**
      * @var \SplObjectStorage
      */
     private $buffers;
 
     /**
-     * @param RequestMatcherInterface $matcher
+     * @param RequestMatcherInterface                    $matcher
+     * @param \Symfony\Component\HttpFoundation\Response $response
      */
-    public function __construct(RequestMatcherInterface $matcher = null)
+    public function __construct(RequestMatcherInterface $matcher = null, Response $response = null)
     {
         $this->matcher = $matcher;
+        $this->response = $response;
         $this->buffers = new \SplObjectStorage();
     }
 
@@ -45,29 +57,39 @@ class OutputBufferListener implements EventSubscriberInterface
     }
 
     /**
-     * Get responses from output buffer.
-     *
-     * @param GetResponseEvent $event The event to handle
+     * @param GetResponseForShutdownEvent $event
      */
-    public function onKernelPostController(GetResponseEvent $event)
+    public function onKernelShutdown(GetResponseForShutdownEvent $event)
     {
         $request = $event->getRequest();
         if ($this->buffers->contains($request)) {
-            $event->setResponse($this->getResponse());
+            $response = (null === $this->response) ? new Response() : $this->response;
+            $result = (string) ob_get_clean();
+            if (false !== $result) {
+                $response->setContent($result);
+            }
+            $event->setResponse($response);
             $this->buffers->detach($request);
         }
     }
 
     /**
-     * Captures a response from output buffers.
+     * Get responses from output buffer.
      *
-     * Override this method in a subclass to set response status and headers.
-     *
-     * @return Response
+     * @param GetResponseForControllerResultEvent $event The event to handle
      */
-    protected function getResponse()
+    public function onKernelView(GetResponseForControllerResultEvent $event)
     {
-        return new Response((string) ob_get_clean());
+        $request = $event->getRequest();
+        if ($this->buffers->contains($request)) {
+            $response = (null === $this->response) ? new Response() : $this->response;
+            $result = (string) ob_get_clean();
+            if (false !== $result) {
+                $response->setContent($result);
+            }
+            $event->setResponse($response);
+            $this->buffers->detach($request);
+        }
     }
 
     /**
@@ -77,8 +99,8 @@ class OutputBufferListener implements EventSubscriberInterface
     {
         return array(
             BaseKernelEvents::CONTROLLER => array('onKernelController'),
-            BaseKernelEvents::VIEW => array('onKernelPostController'),
-            KernelEvents::SHUTDOWN => array('onKernelPostController'),
+            BaseKernelEvents::VIEW => array('onKernelView'),
+            KernelEvents::SHUTDOWN => array('onKernelShutdown'),
         );
     }
 }
