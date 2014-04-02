@@ -33,7 +33,7 @@ class HttpKernel extends BaseHttpKernel implements ShutdownableInterface
     {
         if ($this->shutdown) {
             // shutdown
-            $event = new GetResponseForShutdownEvent($this, $request, $type);
+            $event = new GetResponseForShutdownEvent($this, $request, $type, null);
             $this->dispatcher->dispatch(KernelEvents::SHUTDOWN, $event);
 
             if ($event->hasResponse()) {

@@ -1,8 +1,12 @@
 <?php
 namespace Bangpound\LegacyPhp\Event;
 
-use Symfony\Component\HttpKernel\Event\GetResponseEvent;
+use Symfony\Component\HttpKernel\Event\GetResponseForControllerResultEvent;
 
-class GetResponseForShutdownEvent extends GetResponseEvent
+/**
+ * Class GetResponseForShutdownEvent
+ * @package Bangpound\LegacyPhp\Event
+ */
+class GetResponseForShutdownEvent extends GetResponseForControllerResultEvent
 {
 }
