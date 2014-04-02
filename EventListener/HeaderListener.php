@@ -48,19 +48,22 @@ class HeaderListener implements EventSubscriberInterface
                 }
             }
 
-            // In PHP 5.4.0, find status code using http_response_code function.
-            if (version_compare(PHP_VERSION, '5.4.0') >= 0) {
-                if (http_response_code() && 200 != http_response_code()) {
-                    $response->setStatusCode(http_response_code());
+            // If the Symfony response code is OK, dig deeper.
+            if ($response->isOk()) {
+                // In PHP 5.4.0, find status code using http_response_code function.
+                if (version_compare(PHP_VERSION, '5.4.0') >= 0) {
+                    if (http_response_code() && 200 != http_response_code()) {
+                        $response->setStatusCode(http_response_code());
+                    }
                 }
-            }
 
-            // Lesser PHPs have to check for a location header set by legacy controller.
-            else if ($response->headers->has('location')
-                && !$response->isRedirect($response->headers->get('location'))) {
+                // Lesser PHPs have to check for a location header set by legacy controller.
+                else if ($response->headers->has('location')
+                    && !$response->isRedirect($response->headers->get('location'))) {
 
-                // Fallback to default behavior of PHP.
-                $response->setStatusCode(302);
+                    // Fallback to default behavior of PHP.
+                    $response->setStatusCode(302);
+                }
             }
         }
     }
