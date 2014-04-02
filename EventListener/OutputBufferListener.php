@@ -70,11 +70,13 @@ class OutputBufferListener implements EventSubscriberInterface
         return new Response((string) ob_get_clean());
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public static function getSubscribedEvents()
     {
         return array(
             BaseKernelEvents::CONTROLLER => array('onKernelController'),
-            BaseKernelEvents::EXCEPTION => array('onKernelPostController'),
             BaseKernelEvents::VIEW => array('onKernelPostController'),
             KernelEvents::SHUTDOWN => array('onKernelPostController'),
         );

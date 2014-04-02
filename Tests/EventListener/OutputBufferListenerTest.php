@@ -21,16 +21,6 @@ class OutputBufferListenerTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals(new Response('Hello'), $response);
     }
 
-    public function testControllerThrowsException()
-    {
-        $dispatcher = new EventDispatcher();
-        $dispatcher->addSubscriber(new OutputBufferListener(new RequestMatcher()));
-        $kernel = new HttpKernel($dispatcher, $this->getResolver(function () { echo 'Hello'; throw new \Exception('Bar'); }));
-        $request = new Request();
-        $response = $kernel->handle($request);
-        $this->assertEquals(new Response('Hello', 500), $response);
-    }
-
     public function testControllerNoContents()
     {
         $dispatcher = new EventDispatcher();
