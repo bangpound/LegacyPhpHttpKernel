@@ -1,6 +1,6 @@
 {
     "name": "bangpound/legacy-php-http-kernel",
-    "description": "Symfony HttpKernel for supporting controllers that exit or rreturn null.",
+    "description": "Symfony HttpKernel for supporting controllers that exit or return null.",
     "require": {
         "php": ">=5.3.3",
         "symfony/http-kernel": "~2.4"
@@ -22,7 +22,8 @@
     ],
     "extra": {
         "branch-alias": {
-            "dev-develop": "1.1.x-dev"
+            "dev-master": "1.1.x-dev",
+            "dev-develop": "1.2.x-dev"
         }
     }
 }
