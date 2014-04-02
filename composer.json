@@ -12,9 +12,8 @@
     },
     "license": "MIT",
     "autoload": {
-        "psr-0": { "Bangpound\\LegacyPhp\\": "" }
+        "psr-4": { "Bangpound\\LegacyPhp\\": "" }
     },
-    "target-dir": "Bangpound/LegacyPhp",
     "authors": [
         {
             "name": "Benjamin Doherty",
