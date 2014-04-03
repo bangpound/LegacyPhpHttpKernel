@@ -8,6 +8,10 @@ use Symfony\Component\HttpKernel\Event\FilterControllerEvent;
 use Symfony\Component\HttpKernel\Event\FilterResponseEvent;
 use Symfony\Component\HttpKernel\KernelEvents;
 
+/**
+ * Class ShutdownListener
+ * @package Bangpound\LegacyPhp\EventListener
+ */
 class ShutdownListener implements EventSubscriberInterface
 {
     /**
