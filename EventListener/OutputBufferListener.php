@@ -22,23 +22,16 @@ class OutputBufferListener implements EventSubscriberInterface
     private $matcher;
 
     /**
-     * @var \Symfony\Component\HttpFoundation\Response
-     */
-    private $response;
-
-    /**
      * @var \SplObjectStorage
      */
     private $buffers;
 
     /**
-     * @param RequestMatcherInterface                    $matcher
-     * @param \Symfony\Component\HttpFoundation\Response $response
+     * @param RequestMatcherInterface $matcher
      */
-    public function __construct(RequestMatcherInterface $matcher = null, Response $response = null)
+    public function __construct(RequestMatcherInterface $matcher = null)
     {
         $this->matcher = $matcher;
-        $this->response = $response;
         $this->buffers = new \SplObjectStorage();
     }
 
