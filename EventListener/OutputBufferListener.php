@@ -2,6 +2,7 @@
 namespace Bangpound\LegacyPhp\EventListener;
 
 use Bangpound\LegacyPhp\Event\GetResponseForShutdownEvent;
+use Symfony\Component\DependencyInjection\ContainerAware;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Event\FilterControllerEvent;
@@ -14,7 +15,7 @@ use Bangpound\LegacyPhp\KernelEvents;
  * Class OutputBufferListener
  * @package Bangpound\LegacyPhp\EventListener
  */
-class OutputBufferListener implements EventSubscriberInterface
+class OutputBufferListener extends ContainerAware implements EventSubscriberInterface
 {
     /**
      * @var RequestMatcherInterface Matches Drupal routes.
@@ -56,7 +57,7 @@ class OutputBufferListener implements EventSubscriberInterface
     {
         $request = $event->getRequest();
         if ($this->buffers->contains($request)) {
-            $response = (null === $this->response) ? new Response() : $this->response;
+            $response = $this->container->get('response');
             $result = (string) ob_get_clean();
             if (false !== $result) {
                 $response->setContent($result);
@@ -75,7 +76,7 @@ class OutputBufferListener implements EventSubscriberInterface
     {
         $request = $event->getRequest();
         if ($this->buffers->contains($request)) {
-            $response = (null === $this->response) ? new Response() : $this->response;
+            $response = $this->container->get('response');
             $result = (string) ob_get_clean();
             if (false !== $result) {
                 $response->setContent($result);
