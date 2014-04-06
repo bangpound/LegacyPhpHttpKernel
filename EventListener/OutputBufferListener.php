@@ -2,13 +2,17 @@
 namespace Bangpound\LegacyPhp\EventListener;
 
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
-use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Event\FilterControllerEvent;
-use Symfony\Component\HttpKernel\Event\GetResponseEvent;
+use Symfony\Component\HttpKernel\Event\GetResponseForControllerResultEvent;
 use Symfony\Component\HttpKernel\KernelEvents as BaseKernelEvents;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\RequestMatcherInterface;
 use Bangpound\LegacyPhp\KernelEvents;
 
+/**
+ * Class OutputBufferListener
+ * @package Bangpound\LegacyPhp\EventListener
+ */
 class OutputBufferListener implements EventSubscriberInterface
 {
     /**
@@ -39,35 +43,28 @@ class OutputBufferListener implements EventSubscriberInterface
     {
         $request = $event->getRequest();
         if (null === $this->matcher || $this->matcher->matches($request)) {
-            ob_start();
-            $this->buffers->attach($request);
+            if (ob_start()) {
+                $this->buffers->attach($request);
+            }
         }
     }
 
     /**
      * Get responses from output buffer.
      *
-     * @param GetResponseEvent $event The event to handle
+     * @param GetResponseForControllerResultEvent $event The event to handle
      */
-    public function onKernelPostController(GetResponseEvent $event)
+    public function onKernelView(GetResponseForControllerResultEvent $event)
     {
         $request = $event->getRequest();
         if ($this->buffers->contains($request)) {
-            $event->setResponse($this->getResponse());
+            $result = (string) ob_get_clean();
+            if (false !== $result) {
+                $response = new Response($result);
+            }
+            $event->setResponse($response);
             $this->buffers->detach($request);
         }
-    }
-
-    /**
-     * Captures a response from output buffers.
-     *
-     * Override this method in a subclass to set response status and headers.
-     *
-     * @return Response
-     */
-    protected function getResponse()
-    {
-        return new Response((string) ob_get_clean());
     }
 
     /**
@@ -77,8 +74,8 @@ class OutputBufferListener implements EventSubscriberInterface
     {
         return array(
             BaseKernelEvents::CONTROLLER => array('onKernelController'),
-            BaseKernelEvents::VIEW => array('onKernelPostController'),
-            KernelEvents::SHUTDOWN => array('onKernelPostController'),
+            BaseKernelEvents::VIEW => array('onKernelView'),
+            KernelEvents::SHUTDOWN => array('onKernelView'),
         );
     }
 }

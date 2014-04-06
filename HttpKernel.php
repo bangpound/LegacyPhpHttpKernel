@@ -33,7 +33,7 @@ class HttpKernel extends BaseHttpKernel implements ShutdownableInterface
     {
         if ($this->shutdown) {
             // shutdown
-            $event = new GetResponseForShutdownEvent($this, $request, $type);
+            $event = new GetResponseForShutdownEvent($this, $request, $type, null);
             $this->dispatcher->dispatch(KernelEvents::SHUTDOWN, $event);
 
             if ($event->hasResponse()) {
@@ -43,7 +43,7 @@ class HttpKernel extends BaseHttpKernel implements ShutdownableInterface
                 throw new \LogicException($msg);
             }
 
-            $response = $this->filterResponse($response, $request, $type);
+            $response = $this->filterShutdownResponse($response, $request, $type);
             $response->send();
             $this->terminate($request, $response);
         }
@@ -60,13 +60,13 @@ class HttpKernel extends BaseHttpKernel implements ShutdownableInterface
      *
      * @throws \RuntimeException if the passed object is not a Response instance
      */
-    private function filterResponse(Response $response, Request $request, $type)
+    private function filterShutdownResponse(Response $response, Request $request, $type)
     {
         $event = new FilterResponseEvent($this, $request, $type, $response);
 
         $this->dispatcher->dispatch(BaseKernelEvents::RESPONSE, $event);
 
-        $this->finishRequest($request, $type);
+        $this->finishShutdownRequest($request, $type);
 
         return $event->getResponse();
     }
@@ -81,7 +81,7 @@ class HttpKernel extends BaseHttpKernel implements ShutdownableInterface
      * @param Request $request
      * @param int     $type
      */
-    private function finishRequest(Request $request, $type)
+    private function finishShutdownRequest(Request $request, $type)
     {
         $this->dispatcher->dispatch(BaseKernelEvents::FINISH_REQUEST, new FinishRequestEvent($this, $request, $type));
         $this->requestStack->pop();

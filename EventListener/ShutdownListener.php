@@ -4,11 +4,14 @@ namespace Bangpound\LegacyPhp\EventListener;
 
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpFoundation\RequestMatcherInterface;
-use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Event\FilterControllerEvent;
 use Symfony\Component\HttpKernel\Event\FilterResponseEvent;
 use Symfony\Component\HttpKernel\KernelEvents;
 
+/**
+ * Class ShutdownListener
+ * @package Bangpound\LegacyPhp\EventListener
+ */
 class ShutdownListener implements EventSubscriberInterface
 {
     /**

@@ -3,7 +3,6 @@
 namespace Bangpound\LegacyPhp\Tests;
 
 use Bangpound\LegacyPhp\HttpKernel;
-use Symfony\Component\EventDispatcher\EventDispatcher;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;

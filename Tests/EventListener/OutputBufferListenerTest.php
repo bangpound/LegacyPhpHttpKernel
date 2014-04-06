@@ -31,6 +31,11 @@ class OutputBufferListenerTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals(new Response(), $response);
     }
 
+    /**
+     * @param \Closure $controller
+     *
+     * @return \Symfony\Component\HttpKernel\Controller\ControllerResolverInterface
+     */
     protected function getResolver($controller = null)
     {
         if (null === $controller) {
