@@ -6,11 +6,7 @@ use Bangpound\LegacyPhp\EventListener\HeaderListener;
 use Bangpound\LegacyPhp\Tests\TestClient;
 use Bangpound\LegacyPhp\Tests\TestHttpKernel;
 use Symfony\Component\EventDispatcher\EventDispatcher;
-use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\RequestMatcher;
-use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\HttpKernel\Client;
-use Symfony\Component\HttpKernel\HttpKernel;
 
 class HeaderListenerTest extends \PHPUnit_Framework_TestCase
 {
