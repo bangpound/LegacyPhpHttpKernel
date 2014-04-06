@@ -51,23 +51,6 @@ class OutputBufferListener extends ContainerAware implements EventSubscriberInte
     }
 
     /**
-     * @param GetResponseForShutdownEvent $event
-     */
-    public function onKernelShutdown(GetResponseForShutdownEvent $event)
-    {
-        $request = $event->getRequest();
-        if ($this->buffers->contains($request)) {
-            $response = $this->container->get('response');
-            $result = (string) ob_get_clean();
-            if (false !== $result) {
-                $response->setContent($result);
-            }
-            $event->setResponse($response);
-            $this->buffers->detach($request);
-        }
-    }
-
-    /**
      * Get responses from output buffer.
      *
      * @param GetResponseForControllerResultEvent $event The event to handle
@@ -94,7 +77,7 @@ class OutputBufferListener extends ContainerAware implements EventSubscriberInte
         return array(
             BaseKernelEvents::CONTROLLER => array('onKernelController'),
             BaseKernelEvents::VIEW => array('onKernelView'),
-            KernelEvents::SHUTDOWN => array('onKernelShutdown'),
+            KernelEvents::SHUTDOWN => array('onKernelView'),
         );
     }
 }
