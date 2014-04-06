@@ -43,8 +43,9 @@ class OutputBufferListener implements EventSubscriberInterface
     {
         $request = $event->getRequest();
         if (null === $this->matcher || $this->matcher->matches($request)) {
-            ob_start();
-            $this->buffers->attach($request);
+            if (ob_start()) {
+                $this->buffers->attach($request);
+            }
         }
     }
 
