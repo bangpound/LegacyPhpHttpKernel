@@ -1,10 +1,8 @@
 <?php
 namespace Bangpound\LegacyPhp\EventListener;
 
-use Bangpound\LegacyPhp\Event\GetResponseForShutdownEvent;
 use Symfony\Component\DependencyInjection\ContainerAware;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
-use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Event\FilterControllerEvent;
 use Symfony\Component\HttpKernel\Event\GetResponseForControllerResultEvent;
 use Symfony\Component\HttpKernel\KernelEvents as BaseKernelEvents;

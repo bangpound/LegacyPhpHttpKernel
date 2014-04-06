@@ -3,7 +3,6 @@
 namespace Bangpound\LegacyPhp\EventListener;
 
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
-use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Event\FilterResponseEvent;
 use Symfony\Component\HttpKernel\KernelEvents as BaseKernelEvents;
 use Symfony\Component\HttpFoundation\RequestMatcherInterface;
