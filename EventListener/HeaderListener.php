@@ -47,6 +47,9 @@ class HeaderListener implements EventSubscriberInterface
                 }
             }
 
+            // Purge PHP's headers.
+            header_remove();
+
             // If the Symfony response code is OK, dig deeper.
             if ($response->isOk()) {
                 // In PHP 5.4.0, find status code using http_response_code function.
