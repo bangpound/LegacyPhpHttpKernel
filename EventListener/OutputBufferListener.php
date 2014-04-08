@@ -78,8 +78,8 @@ class OutputBufferListener implements EventSubscriberInterface
             $result = (string) ob_get_clean();
             if (false !== $result) {
                 $response = new Response($result);
+                $event->setResponse($response);
             }
-            $event->setResponse($response);
             $this->buffers->detach($request);
         }
     }
