@@ -4,6 +4,7 @@ namespace Bangpound\LegacyPhp\EventListener;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpKernel\Event\FilterControllerEvent;
 use Symfony\Component\HttpKernel\Event\GetResponseForControllerResultEvent;
+use Symfony\Component\HttpKernel\Event\GetResponseForExceptionEvent;
 use Symfony\Component\HttpKernel\KernelEvents as BaseKernelEvents;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\RequestMatcherInterface;
@@ -50,6 +51,22 @@ class OutputBufferListener implements EventSubscriberInterface
     }
 
     /**
+     * @param GetResponseForExceptionEvent $event
+     */
+    public function onKernelException(GetResponseForExceptionEvent $event)
+    {
+        $request = $event->getRequest();
+        if ($this->buffers->contains($request)) {
+            $result = (string) ob_get_clean();
+            if (false !== $result && !empty($result)) {
+                $response = new Response($result);
+                $event->setResponse($response);
+            }
+            $this->buffers->detach($request);
+        }
+    }
+
+    /**
      * Get responses from output buffer.
      *
      * @param GetResponseForControllerResultEvent $event The event to handle
@@ -61,8 +78,8 @@ class OutputBufferListener implements EventSubscriberInterface
             $result = (string) ob_get_clean();
             if (false !== $result) {
                 $response = new Response($result);
+                $event->setResponse($response);
             }
-            $event->setResponse($response);
             $this->buffers->detach($request);
         }
     }
@@ -75,6 +92,7 @@ class OutputBufferListener implements EventSubscriberInterface
         return array(
             BaseKernelEvents::CONTROLLER => array('onKernelController'),
             BaseKernelEvents::VIEW => array('onKernelView'),
+            BaseKernelEvents::EXCEPTION => array('onKernelException'),
             KernelEvents::SHUTDOWN => array('onKernelView'),
         );
     }
